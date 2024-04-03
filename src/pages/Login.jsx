@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  GithubAuthProvider,
   GoogleAuthProvider,
   getAuth,
   signInWithPopup,
@@ -10,10 +11,11 @@ import app from "./../firebase.config";
 const Login = () => {
   const [user, setUser] = useState(null);
   const auth = getAuth(app);
-  const provider = new GoogleAuthProvider();
+  const googleProvider = new GoogleAuthProvider();
+  const githubProvider = new GithubAuthProvider();
 
-  const handleLogin = () => {
-    signInWithPopup(auth, provider)
+  const handleLoginGoogle = () => {
+    signInWithPopup(auth, googleProvider)
       .then((result) => {
         const loginUser = result.user;
         console.log(loginUser);
@@ -23,6 +25,18 @@ const Login = () => {
         console.log(error);
       });
   };
+
+  const handleLoginGithub = ()=>{
+    signInWithPopup(auth, githubProvider)
+    .then((result)=>{
+      const loggedUser = result.user;
+      setUser(loggedUser)
+      console.log(loggedUser)
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
+  }
 
   const handleLogout = () => {
     signOut(auth)
@@ -43,12 +57,20 @@ const Login = () => {
           LogOut
         </button>
       ) : (
+        <div>
+          <button
+          className="bg-green-500 mr-10 text-white text-2xl font-bold py-1 px-4 rounded-lg shadow-md transition ease-in-out duration-300 hover:scale-105"
+          onClick={handleLoginGoogle}
+        >
+          Google Login
+        </button>
         <button
           className="bg-green-500 text-white text-2xl font-bold py-1 px-4 rounded-lg shadow-md transition ease-in-out duration-300 hover:scale-105"
-          onClick={handleLogin}
+          onClick={handleLoginGithub}
         >
-          Login
+          Github Login
         </button>
+        </div>
       )}
 
       {user && (
